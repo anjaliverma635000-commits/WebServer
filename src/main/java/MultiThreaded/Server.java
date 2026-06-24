@@ -3,6 +3,8 @@ package MultiThreaded;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server {
 
@@ -10,20 +12,28 @@ public class Server {
 
         int port = 8010;
 
-        try {
-            ServerSocket serverSocket = new ServerSocket(port);
+        ExecutorService executor =
+                Executors.newFixedThreadPool(10);
 
-            System.out.println("MultiThreaded Server Started on Port " + port);
+        try {
+
+            ServerSocket serverSocket =
+                    new ServerSocket(port);
+
+            System.out.println(
+                    "Thread Pool Server Started on Port "
+                            + port);
 
             while (true) {
 
-                Socket socket = serverSocket.accept();
+                Socket socket =
+                        serverSocket.accept();
 
                 System.out.println(
                         "Client Connected : "
                                 + socket.getRemoteSocketAddress());
 
-                Thread thread = new Thread(() -> {
+                executor.submit(() -> {
 
                     try {
 
@@ -33,21 +43,24 @@ public class Server {
                                         true);
 
                         toClient.println(
-                                "Hello from MultiThreaded Server");
+                                "Hello from Thread Pool Server");
 
                         socket.close();
 
                     } catch (Exception e) {
+
                         e.printStackTrace();
                     }
-
                 });
-
-                thread.start();
             }
 
         } catch (Exception e) {
+
             e.printStackTrace();
+
+        } finally {
+
+            executor.shutdown();
         }
     }
 }

@@ -23,4 +23,4 @@ A Java-based web server built using Socket Programming and Multithreading concep
 3. Observe communication between client and server
 
 ## Author
-Anjali Verma
+Anjali Kumari
